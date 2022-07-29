@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: weather-us-service
+  namespace: weather-us-namespace
+spec:
+  selector:
+    app: weather-us-pod
+  ports:
+  - port: 8080
+    targetPort: 80
+  type: ClusterIP

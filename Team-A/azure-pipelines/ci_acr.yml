@@ -1,0 +1,40 @@
+name: 0.0.1$(Rev:.r)_$(SourceBranchName)
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - Team-A/app_config/*
+    exclude:
+      - Team-A/app_config/weather.yml
+      
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  - name: containerRegistry
+    value: "rmdev"
+  - name: repository
+    value: "Team-A"
+  - name: dockerfile
+    value: "$(Build.SourcesDirectory)/Team-A/app_config/Dockerfile"
+
+stages:
+  - stage: Build
+    jobs:
+      - job: Build
+        steps:
+          - task: Docker@2
+            displayName: Build_Push
+            inputs:
+              command: buildAndPush
+              repository: ${{ variables.repository }}
+              dockerfile: ${{ variables.dockerfile }}
+              containerRegistry: ${{ variables.containerRegistry }}
+              tags: |
+                eu-$(Build.BuildNumber)
+                demoapp
+                latest

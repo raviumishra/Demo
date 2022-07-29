@@ -1,0 +1,33 @@
+name: 0.0.1$(Rev:.r)_$(SourceBranchName)
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - 'Team-B/*'
+
+pool:
+  vmImage: "ubuntu-latest"
+  
+stages:
+  - stage: DEV
+    displayName: DEV
+    jobs:
+      - deployment: Deploy
+        environment: "azure-kubernetes-service-dev-1"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - template: ./templates/template.yml
+                  parameters:
+                    subscription: "Development Subscription"
+                    aks_resource_group: "eu1-dev-aks-1-rg"
+                    aks_name: "eu1-dev-aks-1"
+                    namespace: "$(System.DefaultWorkingDirectory)/Team-B/cluster_config/namespace.yml"
+                    service: "$(System.DefaultWorkingDirectory)/Team-B/cluster_config/service.yml"
+                    weather: "$(System.DefaultWorkingDirectory)/Team-B/app_config/weather-us-deploy.yml"

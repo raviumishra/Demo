@@ -1,0 +1,52 @@
+parameters:
+  - name: subscription
+    type: string
+
+  - name: aks_resource_group
+    type: string
+
+  - name: aks_name
+    type: string
+
+  - name: namespace
+    type: string
+
+  - name: service
+    type: string
+  
+  - name: weather
+    type: string
+
+steps:
+  - task: Kubernetes@1
+    displayName: Deploy Namespace
+    inputs:
+      connectionType: Azure Resource Manager
+      azureSubscriptionEndpoint: '${{ parameters.subscription }}'
+      azureResourceGroup: '${{ parameters.aks_resource_group }}'
+      kubernetesCluster: '${{ parameters.aks_name }}'
+      command: apply
+      useConfigurationFile: true
+      configuration: '${{ parameters.namespace }}'
+
+  - task: Kubernetes@1
+    displayName: Deploy service
+    inputs:
+      connectionType: Azure Resource Manager
+      azureSubscriptionEndpoint: '${{ parameters.subscription }}'
+      azureResourceGroup: '${{ parameters.aks_resource_group }}'
+      kubernetesCluster: '${{ parameters.aks_name }}'
+      command: apply
+      useConfigurationFile: true
+      configuration: '${{ parameters.service }}'
+
+  - task: Kubernetes@1
+    displayName: Deploy weather
+    inputs:
+      connectionType: Azure Resource Manager
+      azureSubscriptionEndpoint: '${{ parameters.subscription }}'
+      azureResourceGroup: '${{ parameters.aks_resource_group }}'
+      kubernetesCluster: '${{ parameters.aks_name }}'
+      command: apply
+      useConfigurationFile: true
+      configuration: '${{ parameters.weather }}'

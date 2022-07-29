@@ -1,0 +1,88 @@
+parameters:
+  - name: subscription
+    type: string
+
+  - name: aks_resource_group
+    type: string
+
+  - name: aks_name
+    type: string
+
+  - name: namespace
+    type: string
+
+  - name: SecretProviderClass
+    type: string
+
+  - name: service
+    type: string
+  
+  - name: aks_deployment
+    type: string
+
+  - name: ingress
+    type: string
+
+steps:
+  - task: Kubernetes@1
+    displayName: Deploy Namespace
+    inputs:
+      connectionType: Azure Resource Manager
+      azureSubscriptionEndpoint: '${{ parameters.subscription }}'
+      azureResourceGroup: '${{ parameters.aks_resource_group }}'
+      kubernetesCluster: '${{ parameters.aks_name }}'
+      command: apply
+      useConfigurationFile: true
+      configuration: '${{ parameters.namespace }}'
+
+  # - task: Kubernetes@1
+  #   displayName: Deploy SecretProviderClass
+  #   inputs:
+  #     connectionType: Azure Resource Manager
+  #     azureSubscriptionEndpoint: '${{ parameters.subscription }}'
+  #     azureResourceGroup: '${{ parameters.aks_resource_group }}'
+  #     kubernetesCluster: '${{ parameters.aks_name }}'
+  #     command: apply
+  #     useConfigurationFile: true
+  #     configuration: '${{ parameters.SecretProviderClass }}'
+
+  # - task: AzureCLI@2
+  #   displayName: "Bind User assigned identity with key vault"
+  #   inputs:
+  #     azureSubscription: '${{ parameters.subscription }}'
+  #     scriptType: 'bash'
+  #     scriptLocation: 'scriptPath'
+  #     ScriptPath: './Team-A/cluster_config/scripts/bind-identity-kv.sh'
+     
+  - task: Kubernetes@1
+    displayName: Deploy service
+    inputs:
+      connectionType: Azure Resource Manager
+      azureSubscriptionEndpoint: '${{ parameters.subscription }}'
+      azureResourceGroup: '${{ parameters.aks_resource_group }}'
+      kubernetesCluster: '${{ parameters.aks_name }}'
+      command: apply
+      useConfigurationFile: true
+      configuration: '${{ parameters.service }}'
+
+  - task: Kubernetes@1
+    displayName: Deploy weather
+    inputs:
+      connectionType: Azure Resource Manager
+      azureSubscriptionEndpoint: '${{ parameters.subscription }}'
+      azureResourceGroup: '${{ parameters.aks_resource_group }}'
+      kubernetesCluster: '${{ parameters.aks_name }}'
+      command: apply
+      useConfigurationFile: true
+      configuration: '${{ parameters.aks_deployment }}'
+
+  - task: Kubernetes@1
+    displayName: Deploy ingress
+    inputs:
+      connectionType: Azure Resource Manager
+      azureSubscriptionEndpoint: '${{ parameters.subscription }}'
+      azureResourceGroup: '${{ parameters.aks_resource_group }}'
+      kubernetesCluster: '${{ parameters.aks_name }}'
+      command: apply
+      useConfigurationFile: true
+      configuration: '${{ parameters.ingress }}'

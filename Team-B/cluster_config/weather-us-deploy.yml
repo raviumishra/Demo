@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weather-us-deployment
+  namespace: weather-us-namespace
+spec:
+  selector:
+    matchLabels:
+      app: weather-us-pod
+  template:
+    metadata:
+      labels:
+        app: weather-us-pod
+    spec:
+      containers:
+        - name: weather-us-container
+          image: rmdev.azurecr.io/team-a:latest
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 80
+          env:
+            - name: REGION
+              value: IN

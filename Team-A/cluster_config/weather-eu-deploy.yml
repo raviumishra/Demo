@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demoapp-weather-eu-deployment
+  namespace: weather-eu-namespace
+spec:
+  selector:
+    matchLabels:
+      app: weather-eu-pod
+  template:
+    metadata:
+      labels:
+        app: weather-eu-pod
+    spec:
+      containers:
+        - name: weather-eu-container
+          image: rmdev.azurecr.io/team-a:demoapp
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 80
+          env:
+            - name: REGION
+              value: IE
+      nodeSelector:
+        label: linux_app

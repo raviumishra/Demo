@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: weather-us-namespace
+spec:
+  finalizers:
+    - foregroundDeletion

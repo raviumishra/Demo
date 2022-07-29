@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: weather-eu-service
+  namespace: weather-eu-namespace
+spec:
+  selector:
+    app: weather-eu-pod
+  ports:
+    - port: 80
+      targetPort: 80
+  type: ClusterIP
